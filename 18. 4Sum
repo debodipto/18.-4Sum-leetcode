@@ -1,0 +1,48 @@
+class Solution {
+public:
+    void findNSum(int l, int r, int target, int N, vector<int>& nums, vector<int>& result, vector<vector<int>>& results){
+        if(r-l+1 < N || N < 2 || target < nums[l]*N || target > nums[r]*N){
+            return;
+        }
+        if(N == 2){
+            while(l < r){
+                if(nums[l] + nums[r] == target){
+                    result.push_back(nums[l]);
+                    result.push_back(nums[r]);
+                    results.push_back(result);
+                    result.pop_back();
+                    result.pop_back();
+                    while(l < r && nums[l] == nums[l+1]){
+                        l++;
+                    }
+                    l++;
+                    while(l < r && nums[r] == nums[r-1]){
+                        r--;
+                    }
+                    r--;
+                }else if(nums[l] + nums[r] < target){
+                    l++;
+                }else{
+                    r--;
+                }
+            }
+        }else{
+            for(int i = l; i <= r+1-N; i++){
+                if(i == l || (i > l && nums[i] != nums[i-1])){
+                    result.push_back(nums[i]);
+
+                    findNSum(i+1, r, target-nums[i], N-1, nums, result, results);
+                    result.pop_back();
+                }
+            }
+        }
+    };
+    
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        sort(nums.begin(), nums.end());
+        vector<int> result;
+        vector<vector<int>> results;
+        findNSum(0, nums.size()-1, target, 4, nums, result, results);
+        return results;
+    }
+};
